@@ -106,7 +106,7 @@ import jwt from "jsonwebtoken";
         const user = await UserModel.findOne({email})
 
         if (!user) {
-            return response.status(400).jason({
+            return response.status(400).json({
                 message : "User belum login",
                 error : true,
                 success : false
@@ -114,7 +114,7 @@ import jwt from "jsonwebtoken";
         }
 
         if (user.status !== "Active") {
-            return response.status(400).jason({
+            return response.status(400).json({
                 message : "Contact to admin",
                 error : true,
                 success : false
@@ -132,6 +132,10 @@ import jwt from "jsonwebtoken";
 
         const accessToken = await generatedAccessToken(user._id)
         const refreshToken = await generatedRefreshToken(user._id)
+
+        const updateUser = await UserModel.findByIdAndUpdate(user?._id,{
+            last_login_date : new Date()
+        })
 
         const cookiesOption = {
             httpOnly : true,
@@ -329,6 +333,11 @@ import jwt from "jsonwebtoken";
             })
         }
 
+        const updateUser = await UserModel.findByIdAndUpdate(user?._id,{
+            forgot_password_otp : "",
+            forgot_password_expiry : ""
+        })
+
         return res.json({
             message : "Verify OTP Succesfully",
             error : false,
@@ -434,6 +443,26 @@ import jwt from "jsonwebtoken";
     } catch (error) {
         return res.status(500).json({
             message : error.message || error,
+            error : true,
+            success : false
+        })
+    }
+ }
+
+ export async function userDetails(req,res) {
+    try {
+        const userId = req.userId
+        const user = await UserModel.findById(userId).select('-password -refresh_token')
+
+        return res.json({
+            message : "user details",
+            data : user,
+            error : false,
+            success : true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message : "some wrong",
             error : true,
             success : false
         })

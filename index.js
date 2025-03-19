@@ -25,7 +25,7 @@ app.use(helmet({
 }));
 
 // Port server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // Route utama
 app.get("/", (req, res) => {

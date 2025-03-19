@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 if (process.env.RESEND_API){
-    console.log("cek komfigurasi RESNED_API di file .env")
+    console.log("Cek konfigurasi RESNED_API di file .env")
 }
 
 const resend = new Resend(process.env.RESEND_API);
